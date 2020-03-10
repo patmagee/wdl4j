@@ -1,8 +1,8 @@
 package org.openwdl.wdl4j;
 
 import org.junit.jupiter.api.Test;
-
-import javax.print.Doc;
+import org.openwdl.wdl4j.v1.Document;
+import org.openwdl.wdl4j.v1.WdlDocumentFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
