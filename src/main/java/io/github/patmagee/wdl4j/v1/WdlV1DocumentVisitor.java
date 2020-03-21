@@ -1,11 +1,11 @@
-package org.openwdl.wdl4j.v1;
+package io.github.patmagee.wdl4j.v1;
 
 import org.openwdl.wdl.v1.parser.WdlParser;
 import org.openwdl.wdl.v1.parser.WdlParserBaseVisitor;
-import org.openwdl.wdl4j.v1.api.WdlElement;
-import org.openwdl.wdl4j.v1.api.WorkflowElement;
-import org.openwdl.wdl4j.v1.expression.*;
-import org.openwdl.wdl4j.v1.typing.*;
+import io.github.patmagee.wdl4j.v1.api.WdlElement;
+import io.github.patmagee.wdl4j.v1.api.WorkflowElement;
+import io.github.patmagee.wdl4j.v1.expression.*;
+import io.github.patmagee.wdl4j.v1.typing.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -360,9 +360,11 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
 
     @Override
     public Import visitImport_doc(WdlParser.Import_docContext ctx) {
-        Expression importUrl = visitString(ctx.string());
-        String name = ctx.Identifier().getText();
-
+        StringLiteral importUrl = visitString(ctx.string());
+        String name = null;
+        if (ctx.import_as() !=null){
+            name = ctx.import_as().Identifier().getText();
+        }
         List<Import.ImportAlias> aliases = new ArrayList<>();
         if (ctx.import_alias() != null) {
             for (int i = 0; i < ctx.import_alias().size(); i++) {

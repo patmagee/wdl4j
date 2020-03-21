@@ -1,11 +1,11 @@
-package org.openwdl.wdl4j.v1;
+package io.github.patmagee.wdl4j.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.openwdl.wdl4j.v1.api.WdlElement;
-import org.openwdl.wdl4j.v1.api.WorkflowElement;
+import io.github.patmagee.wdl4j.v1.api.WdlElement;
+import io.github.patmagee.wdl4j.v1.api.WorkflowElement;
 
 import java.util.List;
 
@@ -23,8 +23,4 @@ public class Workflow implements WdlElement {
     private Meta meta;
     private ParameterMeta parameterMeta;
 
-    @Override
-    public String getElementName() {
-        return "workflow  " + name;
-    }
 }
