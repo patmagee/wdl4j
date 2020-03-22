@@ -1,13 +1,19 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-@Builder
-@NoArgsConstructor
 @EqualsAndHashCode
-public class FloatType extends Type {
+public class FloatType implements Type {
+
+    private static final FloatType INSTANCE = new FloatType();
+
+    private FloatType(){
+
+    }
+
+    public static FloatType getType() {
+        return INSTANCE;
+    }
 
     @Override
     public String getTypeName() {

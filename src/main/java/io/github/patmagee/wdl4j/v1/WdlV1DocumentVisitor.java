@@ -7,29 +7,26 @@ import io.github.patmagee.wdl4j.v1.api.WorkflowElement;
 import io.github.patmagee.wdl4j.v1.expression.*;
 import io.github.patmagee.wdl4j.v1.typing.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
 
     @Override
     public Type visitType_base(WdlParser.Type_baseContext ctx) {
         if (ctx.BOOLEAN() != null) {
-            return new BooleanType();
+            return BooleanType.getType();
         } else if (ctx.STRING() != null) {
-            return new StringType();
+            return StringType.getType();
         } else if (ctx.FILE() != null) {
-            return new FileType();
+            return FileType.getType();
         } else if (ctx.FLOAT() != null) {
-            return new FloatType();
+            return FloatType.getType();
         } else if (ctx.INT() != null) {
-            return new IntType();
+            return IntType.getType();
         } else if (ctx.Identifier() != null) {
-            return new StructType(ctx.Identifier().getText());
+            return StructType.getType(ctx.Identifier().getText());
         } else if (ctx.OBJECT() != null) {
-            return new ObjectType();
+            return ObjectType.getType();
         } else {
             return (Type) super.visitType_base(ctx);
         }
@@ -39,14 +36,14 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
     public MapType visitMap_type(WdlParser.Map_typeContext ctx) {
         Type left = visitWdl_type(ctx.wdl_type(0));
         Type right = visitWdl_type(ctx.wdl_type(1));
-        return new MapType(left, right);
+        return MapType.getType(left, right);
     }
 
     @Override
     public ArrayType visitArray_type(WdlParser.Array_typeContext ctx) {
         Type innerType = visitWdl_type(ctx.wdl_type());
-        Boolean nonEmpty = ctx.PLUS() != null && ctx.PLUS().getText().equals("+");
-        return new ArrayType(innerType, nonEmpty);
+        boolean nonEmpty = ctx.PLUS() != null && ctx.PLUS().getText().equals("+");
+        return ArrayType.getType(innerType, nonEmpty);
 
     }
 
@@ -54,14 +51,14 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
     public PairType visitPair_type(WdlParser.Pair_typeContext ctx) {
         Type left = visitWdl_type(ctx.wdl_type(0));
         Type right = visitWdl_type(ctx.wdl_type(1));
-        return new PairType(left, right);
+        return PairType.getType(left, right);
     }
 
     @Override
     public Type visitWdl_type(WdlParser.Wdl_typeContext ctx) {
         Type type = (Type) super.visitWdl_type(ctx);
-        if (ctx.OPTIONAL() != null && ctx.OPTIONAL().equals("?")) {
-            return new OptionalType(type);
+        if (ctx.OPTIONAL() != null) {
+            return OptionalType.getType(type);
         }
         return type;
     }

@@ -4,8 +4,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode
-@NoArgsConstructor
-public class StringType extends Type {
+public class StringType implements Type {
+
+    private static final StringType INSTANCE = new StringType();
+
+    private StringType() {
+
+    }
+
+    public static StringType getType() {
+        return INSTANCE;
+    }
 
     @Override
     public String getTypeName() {
