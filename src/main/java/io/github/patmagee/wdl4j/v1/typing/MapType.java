@@ -2,6 +2,7 @@ package io.github.patmagee.wdl4j.v1.typing;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,22 +19,22 @@ public class MapType implements Type {
         this.valueType = valueType;
     }
 
-    private final static Set<MapType> INSTANCES = new HashSet<>();
-
-    public static MapType getType(Type key, Type value) {
-        return INSTANCES.stream()
-                        .filter(a -> a.keyType.equals(key) && a.valueType.equals(value))
-                        .findFirst()
-                        .orElseGet(() -> {
-                            MapType typeInstance = new MapType(key, value);
-                            INSTANCES.add(typeInstance);
-                            return typeInstance;
-                        });
-
-    }
-
     @Override
     public String getTypeName() {
         return "Map[" + keyType.getTypeName() + "," + valueType.getTypeName() + "]";
+    }
+
+    private final static Set<MapType> INSTANCES = new HashSet<>();
+
+    public static MapType getType(@NonNull Type keyType,@NonNull Type valueType) {
+        for (MapType instance : INSTANCES) {
+            if (instance.valueType.equals(valueType) && instance.keyType.equals(keyType)) {
+                return instance;
+            }
+        }
+
+        MapType instance = new MapType(keyType, valueType);
+        INSTANCES.add(instance);
+        return instance;
     }
 }

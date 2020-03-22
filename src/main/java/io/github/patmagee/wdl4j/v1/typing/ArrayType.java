@@ -2,6 +2,7 @@ package io.github.patmagee.wdl4j.v1.typing;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,16 +26,16 @@ public class ArrayType implements Type {
 
     private final static Set<ArrayType> INSTANCES = new HashSet<>();
 
-    public static ArrayType getType(Type type, boolean nonEmpty) {
-        return INSTANCES.stream()
-                        .filter(a -> a.innerType.equals(type) && a.nonEmpty == nonEmpty)
-                        .findFirst()
-                        .orElseGet(() -> {
-                            ArrayType typeInstance = new ArrayType(type, nonEmpty);
-                            INSTANCES.add(typeInstance);
-                            return typeInstance;
-                        });
+    public static ArrayType getType(@NonNull Type innerType, @NonNull boolean nonEmpty) {
+        for (ArrayType instance : INSTANCES) {
+            if (instance.innerType.equals(innerType) && nonEmpty == instance.nonEmpty) {
+                return instance;
+            }
+        }
 
+        ArrayType instance = new ArrayType(innerType, nonEmpty);
+        INSTANCES.add(instance);
+        return instance;
     }
 
 }

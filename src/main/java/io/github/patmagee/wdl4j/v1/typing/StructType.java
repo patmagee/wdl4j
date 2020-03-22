@@ -2,6 +2,7 @@ package io.github.patmagee.wdl4j.v1.typing;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,18 +18,22 @@ public class StructType implements Type {
 
     }
 
-    private final static Set<StructType> INSTANCES = new HashSet<>();
-
-    public static StructType getType(String name) {
-        return INSTANCES.stream().filter(instance -> instance.name.equals(name)).findFirst().orElseGet(() -> {
-            StructType structType = new StructType(name);
-            INSTANCES.add(structType);
-            return structType;
-        });
-    }
-
     @Override
     public String getTypeName() {
         return name;
+    }
+
+    private final static Set<StructType> INSTANCES = new HashSet<>();
+
+    public static StructType getType(@NonNull String name) {
+        for (StructType instance : INSTANCES) {
+            if (instance.name.equals(name)) {
+                return instance;
+            }
+        }
+
+        StructType instance = new StructType(name);
+        INSTANCES.add(instance);
+        return instance;
     }
 }

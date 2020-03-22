@@ -2,6 +2,7 @@ package io.github.patmagee.wdl4j.v1.typing;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,18 +18,22 @@ public class OptionalType implements Type {
 
     }
 
-    private final static Set<OptionalType> INSTANCES = new HashSet<>();
-
-    public static OptionalType getType(Type inner) {
-        return INSTANCES.stream().filter(instance -> instance.innerType.equals(inner)).findFirst().orElseGet(() -> {
-            OptionalType optionalType = new OptionalType(inner);
-            INSTANCES.add(optionalType);
-            return optionalType;
-        });
-    }
-
     @Override
     public String getTypeName() {
         return innerType.getTypeName() + "?";
+    }
+
+    private final static Set<OptionalType> INSTANCES = new HashSet<>();
+
+    public static OptionalType getType(@NonNull Type innerType) {
+        for (OptionalType instance : INSTANCES) {
+            if (instance.innerType.equals(innerType)) {
+                return instance;
+            }
+        }
+
+        OptionalType instance = new OptionalType(innerType);
+        INSTANCES.add(instance);
+        return instance;
     }
 }

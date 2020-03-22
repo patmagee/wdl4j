@@ -2,6 +2,7 @@ package io.github.patmagee.wdl4j.v1.typing;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,22 +19,23 @@ public class PairType implements Type {
         this.rightType = rightType;
     }
 
-    private final static Set<PairType> INSTANCES = new HashSet<>();
-
-    public static PairType getType(Type left, Type right) {
-        return INSTANCES.stream()
-                        .filter(a -> a.leftType.equals(left) && a.rightType.equals(right))
-                        .findFirst()
-                        .orElseGet(() -> {
-                            PairType typeInstance = new PairType(left, right);
-                            INSTANCES.add(typeInstance);
-                            return typeInstance;
-                        });
-
-    }
-
     @Override
     public String getTypeName() {
         return "Pair[" + leftType.getTypeName() + "," + rightType.getTypeName() + "]";
+    }
+
+    private final static Set<PairType> INSTANCES = new HashSet<>();
+
+    public static PairType getType(@NonNull Type leftType,@NonNull Type rightType) {
+        for (PairType instance : INSTANCES) {
+            if (instance.leftType.equals(leftType) && instance.rightType.equals(rightType)) {
+                return instance;
+            }
+        }
+
+        PairType instance = new PairType(leftType, rightType);
+        INSTANCES.add(instance);
+        return instance;
+
     }
 }
