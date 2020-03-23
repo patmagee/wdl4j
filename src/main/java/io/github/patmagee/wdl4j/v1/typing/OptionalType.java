@@ -1,21 +1,20 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@EqualsAndHashCode
-public class OptionalType implements Type {
+public class OptionalType extends Type {
 
-    private Type innerType;
+    private final Type innerType;
 
     private OptionalType(Type innerType) {
         this.innerType = innerType;
 
+    }
+
+    public Type getInnerType() {
+        return innerType;
     }
 
     @Override
@@ -23,9 +22,11 @@ public class OptionalType implements Type {
         return innerType.getTypeName() + "?";
     }
 
+
     private final static Set<OptionalType> INSTANCES = new HashSet<>();
 
-    public static OptionalType getType(@NonNull Type innerType) {
+    public static OptionalType getType(Type innerType) {
+        Objects.requireNonNull(innerType, "InnerType of an optional cannot be null");
         for (OptionalType instance : INSTANCES) {
             if (instance.innerType.equals(innerType)) {
                 return instance;

@@ -1,22 +1,25 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@EqualsAndHashCode
-public class ArrayType implements Type {
+public class ArrayType extends Type {
 
-    private Type innerType;
-    private Boolean nonEmpty;
+    private final Type innerType;
+    private final Boolean nonEmpty;
 
     private ArrayType(Type innerType, boolean nonEmpty) {
         this.innerType = innerType;
         this.nonEmpty = nonEmpty;
+    }
+
+    public Type getInnerType() {
+        return innerType;
+    }
+
+    public Boolean getNonEmpty() {
+        return nonEmpty;
     }
 
     @Override
@@ -24,9 +27,11 @@ public class ArrayType implements Type {
         return "Array[" + innerType.getTypeName() + "]" + (nonEmpty ? "+" : "");
     }
 
+
     private final static Set<ArrayType> INSTANCES = new HashSet<>();
 
-    public static ArrayType getType(@NonNull Type innerType, @NonNull boolean nonEmpty) {
+    public static ArrayType getType(Type innerType, boolean nonEmpty) {
+        Objects.requireNonNull(innerType, "The innertype of an ArrayType cannot be null");
         for (ArrayType instance : INSTANCES) {
             if (instance.innerType.equals(innerType) && nonEmpty == instance.nonEmpty) {
                 return instance;
@@ -37,5 +42,4 @@ public class ArrayType implements Type {
         INSTANCES.add(instance);
         return instance;
     }
-
 }

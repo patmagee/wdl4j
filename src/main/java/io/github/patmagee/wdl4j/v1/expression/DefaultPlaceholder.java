@@ -1,16 +1,17 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class DefaultPlaceholder extends Expression {
 
-    private Expression value;
+    private final Expression value;
 
+    public DefaultPlaceholder(Expression value) {
+        Objects.requireNonNull(value,"Default placeholder value cannot be null");
+        this.value = value;
+    }
+
+    public Expression getValue() {
+        return value;
+    }
 }

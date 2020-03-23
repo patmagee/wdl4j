@@ -1,18 +1,26 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Signed extends Expression {
 
-    private Operation operation;
-    private Expression expression;
+    private final Expression expression;
+    private final Operation operation;
+
+    public Signed(Expression expression, Operation operation) {
+        Objects.requireNonNull(expression,"The expression to apply the sign to cannot be null");
+        Objects.requireNonNull(operation,"The Signed operation cannot be null");
+        this.expression = expression;
+        this.operation = operation;
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
+
+    public Operation getOperation() {
+        return operation;
+    }
 
     public enum Operation {
         PLUS,MINUS

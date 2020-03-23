@@ -1,14 +1,17 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 public class Grouping extends Expression {
 
-    private Expression innerExpression;
+    private final Expression innerExpression;
 
+    public Grouping(Expression innerExpression) {
+        Objects.requireNonNull(innerExpression,"The inner expression of a grouping cannot be null");
+        this.innerExpression = innerExpression;
+    }
+
+    public Expression getInnerExpression() {
+        return innerExpression;
+    }
 }

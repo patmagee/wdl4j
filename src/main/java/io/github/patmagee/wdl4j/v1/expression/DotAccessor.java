@@ -1,17 +1,24 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class DotAccessor extends Expression {
 
-    private Expression element;
-    private String name;
+    private final Expression element;
+    private final String name;
 
+    public DotAccessor(Expression element, String name) {
+        Objects.requireNonNull(element, "The expression for a dot accessor cannot be null");
+        Objects.requireNonNull(name, "The name cannot for a dot accessor cannot be null");
+        this.element = element;
+        this.name = name;
+    }
+
+    public Expression getElement() {
+        return element;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

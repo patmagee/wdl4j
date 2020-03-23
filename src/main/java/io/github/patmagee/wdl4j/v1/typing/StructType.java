@@ -1,21 +1,19 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@EqualsAndHashCode
-public class StructType implements Type {
+public class StructType extends Type {
 
     private String name;
 
     private StructType(String name) {
         this.name = name;
+    }
 
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -25,7 +23,9 @@ public class StructType implements Type {
 
     private final static Set<StructType> INSTANCES = new HashSet<>();
 
-    public static StructType getType(@NonNull String name) {
+    public static StructType getType(String name) {
+        Objects.requireNonNull(name,"The name of a struct type cannot be null");
+
         for (StructType instance : INSTANCES) {
             if (instance.name.equals(name)) {
                 return instance;

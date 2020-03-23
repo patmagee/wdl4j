@@ -1,10 +1,6 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-@EqualsAndHashCode
-public class StringType implements Type {
+public class StringType extends Type {
 
     private static final StringType INSTANCE = new StringType();
 

@@ -7,8 +7,6 @@ import io.github.patmagee.wdl4j.v1.exception.WdlSyntaxError;
 import io.github.patmagee.wdl4j.v1.imports.FileWdlResolver;
 import io.github.patmagee.wdl4j.v1.imports.UrlWdlResolver;
 import io.github.patmagee.wdl4j.v1.util.UriUtils;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.CodePointBuffer;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -18,30 +16,30 @@ import org.openwdl.wdl.v1.parser.WdlParser;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@Slf4j
 public class WdlV1DocumentFactory {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WdlV1DocumentFactory.class);
     private List<WdlResolver> wdlResolvers;
 
     public WdlV1DocumentFactory() {
         wdlResolvers = Arrays.asList(new UrlWdlResolver(), new FileWdlResolver());
     }
 
-    public WdlV1DocumentFactory(@NonNull List<WdlResolver> wdlResolvers) {
+    public WdlV1DocumentFactory(List<WdlResolver> wdlResolvers) {
+        Objects.requireNonNull(wdlResolvers,"WdlResolvers cannot be null");
         this.wdlResolvers = wdlResolvers;
     }
 
-    public void setWdlResolvers(@NonNull List<WdlResolver> wdlResolvers) {
+    public void setWdlResolvers(List<WdlResolver> wdlResolvers) {
+        Objects.requireNonNull(wdlResolvers,"WdlResolvers cannot be null");
         this.wdlResolvers = wdlResolvers;
     }
 
-    public void addImportResolver(@NonNull WdlResolver wdlResolver) {
+    public void addImportResolver(WdlResolver wdlResolver) {
         wdlResolvers.add(wdlResolver);
     }
 

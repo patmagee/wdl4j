@@ -1,7 +1,6 @@
 package io.github.patmagee.wdl4j.v1.exception;
 
 import io.github.patmagee.wdl4j.v1.errors.SyntaxError;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 
 public class WdlSyntaxError extends RuntimeException {
 
-    @Getter
     List<SyntaxError> errors;
 
     public WdlSyntaxError(String s, Throwable throwable) {
@@ -27,6 +25,10 @@ public class WdlSyntaxError extends RuntimeException {
     public WdlSyntaxError(List<SyntaxError> syntaxErrors) {
         super();
         this.errors = new ArrayList<>(syntaxErrors);
+    }
+
+    public List<SyntaxError> getErrors() {
+        return errors;
     }
 
     public String getMessage() {

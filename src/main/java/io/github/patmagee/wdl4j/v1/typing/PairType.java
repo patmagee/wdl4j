@@ -1,22 +1,25 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@EqualsAndHashCode
-public class PairType implements Type {
+public class PairType extends Type {
 
-    private Type leftType;
-    private Type rightType;
+    private final Type leftType;
+    private final Type rightType;
 
     private PairType(Type leftType, Type rightType) {
         this.leftType = leftType;
         this.rightType = rightType;
+    }
+
+    public Type getLeftType() {
+        return leftType;
+    }
+
+    public Type getRightType() {
+        return rightType;
     }
 
     @Override
@@ -26,7 +29,9 @@ public class PairType implements Type {
 
     private final static Set<PairType> INSTANCES = new HashSet<>();
 
-    public static PairType getType(@NonNull Type leftType,@NonNull Type rightType) {
+    public static PairType getType(Type leftType, Type rightType) {
+        Objects.requireNonNull(leftType, "The leftType of a pair cannot be null");
+        Objects.requireNonNull(rightType, "The rightType of a pair cannot be null");
         for (PairType instance : INSTANCES) {
             if (instance.leftType.equals(leftType) && instance.rightType.equals(rightType)) {
                 return instance;

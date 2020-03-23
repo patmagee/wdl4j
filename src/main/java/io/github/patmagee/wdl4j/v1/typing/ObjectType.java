@@ -1,9 +1,6 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-
-@EqualsAndHashCode
-public class ObjectType implements Type {
+public class ObjectType extends Type {
 
     private static final ObjectType INSTANCE = new ObjectType();
 

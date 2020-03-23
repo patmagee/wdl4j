@@ -1,11 +1,11 @@
 package io.github.patmagee.wdl4j.v1.errors;
 
-import lombok.Getter;
-
 import java.net.URI;
 
-@Getter
+
 public class SyntaxError {
+
+
 
     private final Object offendingSymbol;
     private final int line;
@@ -19,6 +19,26 @@ public class SyntaxError {
         this.line = line;
         this.position = position;
         this.message = message;
+    }
+
+    public Object getOffendingSymbol() {
+        return offendingSymbol;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public URI getFileName() {
+        return fileName;
     }
 
 

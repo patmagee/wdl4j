@@ -1,22 +1,25 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@EqualsAndHashCode
-public class MapType implements Type {
+public class MapType extends Type {
 
-    private Type keyType;
-    private Type valueType;
+    private final Type keyType;
+    private final Type valueType;
 
     private MapType(Type keyType, Type valueType) {
         this.keyType = keyType;
         this.valueType = valueType;
+    }
+
+    public Type getKeyType() {
+        return keyType;
+    }
+
+    public Type getValueType() {
+        return valueType;
     }
 
     @Override
@@ -26,7 +29,9 @@ public class MapType implements Type {
 
     private final static Set<MapType> INSTANCES = new HashSet<>();
 
-    public static MapType getType(@NonNull Type keyType,@NonNull Type valueType) {
+    public static MapType getType(Type keyType, Type valueType) {
+        Objects.requireNonNull(keyType, "keyType of a MapType cannot be null");
+        Objects.requireNonNull(valueType, "valueType of a MapType cannot be null");
         for (MapType instance : INSTANCES) {
             if (instance.valueType.equals(valueType) && instance.keyType.equals(keyType)) {
                 return instance;
@@ -37,4 +42,5 @@ public class MapType implements Type {
         INSTANCES.add(instance);
         return instance;
     }
+
 }

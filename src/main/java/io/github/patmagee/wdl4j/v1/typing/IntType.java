@@ -1,10 +1,6 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-@EqualsAndHashCode
-public class IntType implements Type {
+public class IntType extends Type {
 
     private static final IntType INSTANCE = new IntType();
 

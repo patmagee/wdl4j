@@ -1,16 +1,17 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class VariableReference extends Expression {
 
-    private String name;
+    private final String name;
 
+    public VariableReference(String name) {
+        Objects.requireNonNull(name, "The name cannot be null for a VariableReference");
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

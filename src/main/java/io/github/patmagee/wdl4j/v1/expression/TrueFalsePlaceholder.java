@@ -1,18 +1,26 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class TrueFalsePlaceholder extends Expression {
 
-    private Expression value;
-    private Condition condition;
+    private final Expression value;
+    private final Condition condition;
+
+    public TrueFalsePlaceholder(Expression value, Condition condition) {
+        Objects.requireNonNull(value,"The value cannot be null for a TrueFalsePlaceholder");
+        Objects.requireNonNull(condition,"The condition cannot be null for a TrueFalsePlaceholder");
+        this.value = value;
+        this.condition = condition;
+    }
+
+    public Expression getValue() {
+        return value;
+    }
+
+    public Condition getCondition() {
+        return condition;
+    }
 
     public enum Condition {
         TRUE,FALSE

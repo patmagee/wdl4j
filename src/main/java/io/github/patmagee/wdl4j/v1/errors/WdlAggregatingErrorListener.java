@@ -1,6 +1,5 @@
 package io.github.patmagee.wdl4j.v1.errors;
 
-import com.sun.jndi.toolkit.url.Uri;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -8,7 +7,6 @@ import org.antlr.v4.runtime.Recognizer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WdlAggregatingErrorListener extends BaseErrorListener {
 
@@ -24,7 +22,6 @@ public class WdlAggregatingErrorListener extends BaseErrorListener {
     public WdlAggregatingErrorListener(){
         this.context = null;
     }
-
 
 
     @Override

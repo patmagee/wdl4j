@@ -1,16 +1,17 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Negate extends Expression {
 
-    private Expression expression;
+    private final Expression expression;
 
+    public Negate(Expression expression) {
+        Objects.requireNonNull(expression, "Negate expression cannot be null");
+        this.expression = expression;
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
 }
