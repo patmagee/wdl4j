@@ -167,95 +167,161 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
 
     @Override
     public BinaryExpression visitLor(WdlParser.LorContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix0()),
-                                    (Expression) visitChildren(ctx.expr_infix1()),
+        return new BinaryExpression(visitExpr_infix0(ctx.expr_infix0()),
+                                    visitExpr_infix1(ctx.expr_infix1()),
                                     BinaryExpression.BinaryOperation.LOGICAL_OR);
     }
 
     @Override
     public BinaryExpression visitLand(WdlParser.LandContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix1()),
-                                    (Expression) visitChildren(ctx.expr_infix2()),
+        return new BinaryExpression(visitExpr_infix1(ctx.expr_infix1()),
+                                    visitExpr_infix2(ctx.expr_infix2()),
                                     BinaryExpression.BinaryOperation.LOGICAL_AND);
     }
 
     @Override
     public BinaryExpression visitEqeq(WdlParser.EqeqContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix2()),
-                                    (Expression) visitChildren(ctx.expr_infix3()),
+        return new BinaryExpression(visitExpr_infix2(ctx.expr_infix2()),
+                                    visitExpr_infix3(ctx.expr_infix3()),
                                     BinaryExpression.BinaryOperation.NOT_EQUAL_TO);
     }
 
     @Override
     public BinaryExpression visitLt(WdlParser.LtContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix2()),
-                                    (Expression) visitChildren(ctx.expr_infix3()),
+        return new BinaryExpression(visitExpr_infix2(ctx.expr_infix2()),
+                                    visitExpr_infix3(ctx.expr_infix3()),
                                     BinaryExpression.BinaryOperation.LESS_THAN);
     }
 
     @Override
     public BinaryExpression visitGte(WdlParser.GteContext ctx) {
 
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix2()),
-                                    (Expression) visitChildren(ctx.expr_infix3()),
+        return new BinaryExpression(visitExpr_infix2(ctx.expr_infix2()),
+                                    visitExpr_infix3(ctx.expr_infix3()),
                                     BinaryExpression.BinaryOperation.GREATER_THAN_OR_EQUAL);
     }
 
     @Override
     public BinaryExpression visitNeq(WdlParser.NeqContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix2()),
-                                    (Expression) visitChildren(ctx.expr_infix3()),
+        return new BinaryExpression(visitExpr_infix2(ctx.expr_infix2()),
+                                    visitExpr_infix3(ctx.expr_infix3()),
                                     BinaryExpression.BinaryOperation.NOT_EQUAL_TO);
     }
 
     @Override
     public BinaryExpression visitLte(WdlParser.LteContext ctx) {
 
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix2()),
-                                    (Expression) visitChildren(ctx.expr_infix3()),
+        return new BinaryExpression(visitExpr_infix2(ctx.expr_infix2()),
+                                    visitExpr_infix3(ctx.expr_infix3()),
                                     BinaryExpression.BinaryOperation.LESS_THAN_OR_EQUAL);
     }
 
     @Override
     public BinaryExpression visitGt(WdlParser.GtContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix2()),
-                                    (Expression) visitChildren(ctx.expr_infix3()),
+        return new BinaryExpression(visitExpr_infix2(ctx.expr_infix2()),
+                                    visitExpr_infix3(ctx.expr_infix3()),
                                     BinaryExpression.BinaryOperation.GREATER_THAN);
     }
 
     @Override
     public BinaryExpression visitAdd(WdlParser.AddContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix3()),
-                                    (Expression) visitChildren(ctx.expr_infix4()),
+        return new BinaryExpression(visitExpr_infix3(ctx.expr_infix3()),
+                                    visitExpr_infix4(ctx.expr_infix4()),
                                     BinaryExpression.BinaryOperation.ADD);
     }
 
     @Override
     public BinaryExpression visitSub(WdlParser.SubContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix3()),
-                                    (Expression) visitChildren(ctx.expr_infix4()),
+        return new BinaryExpression(visitExpr_infix3(ctx.expr_infix3()),
+                                    visitExpr_infix4(ctx.expr_infix4()),
                                     BinaryExpression.BinaryOperation.SUBTRACT);
     }
 
     @Override
     public BinaryExpression visitMod(WdlParser.ModContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix4()),
-                                    (Expression) visitChildren(ctx.expr_infix5()),
+        return new BinaryExpression(visitExpr_infix4(ctx.expr_infix4()),
+                                    (Expression) visitExpr_infix5(ctx.expr_infix5()),
                                     BinaryExpression.BinaryOperation.MOD);
     }
 
     @Override
     public BinaryExpression visitMul(WdlParser.MulContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix4()),
-                                    (Expression) visitChildren(ctx.expr_infix5()),
+        return new BinaryExpression(visitExpr_infix4(ctx.expr_infix4()),
+                                    (Expression) visitExpr_infix5(ctx.expr_infix5()),
                                     BinaryExpression.BinaryOperation.MULTIPLY);
     }
 
     @Override
     public BinaryExpression visitDivide(WdlParser.DivideContext ctx) {
-        return new BinaryExpression((Expression) visitChildren(ctx.expr_infix4()),
-                                    (Expression) visitChildren(ctx.expr_infix5()),
+        return new BinaryExpression(visitExpr_infix4(ctx.expr_infix4()),
+                                    (Expression) visitExpr_infix5(ctx.expr_infix5()),
                                     BinaryExpression.BinaryOperation.DIVIDE);
+    }
+
+    private Expression visitExpr_infix0(WdlParser.Expr_infix0Context ctx) {
+        if (ctx instanceof WdlParser.LorContext) {
+            return visitLor((WdlParser.LorContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix1Context) {
+            return (Expression) visitInfix1((WdlParser.Infix1Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix1(WdlParser.Expr_infix1Context ctx) {
+        if (ctx instanceof WdlParser.LandContext) {
+            return visitLand((WdlParser.LandContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix2Context) {
+            return (Expression) visitInfix2((WdlParser.Infix2Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix2(WdlParser.Expr_infix2Context ctx) {
+        if (ctx instanceof WdlParser.EqeqContext) {
+            return visitEqeq((WdlParser.EqeqContext) ctx);
+        } else if (ctx instanceof WdlParser.GteContext) {
+            return visitGte((WdlParser.GteContext) ctx);
+        } else if (ctx instanceof WdlParser.GtContext) {
+            return visitGt((WdlParser.GtContext) ctx);
+        } else if (ctx instanceof WdlParser.LtContext) {
+            return visitLt((WdlParser.LtContext) ctx);
+        } else if (ctx instanceof WdlParser.LteContext) {
+            return visitLte((WdlParser.LteContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix3Context) {
+            return (Expression) visitInfix3((WdlParser.Infix3Context) ctx);
+        } else if (ctx instanceof WdlParser.NeqContext) {
+            return visitNeq((WdlParser.NeqContext) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix3(WdlParser.Expr_infix3Context ctx) {
+        if (ctx instanceof WdlParser.AddContext) {
+            return visitAdd((WdlParser.AddContext) ctx);
+        } else if (ctx instanceof WdlParser.SubContext) {
+            return visitSub((WdlParser.SubContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix4Context) {
+            return (Expression) visitInfix4((WdlParser.Infix4Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix4(WdlParser.Expr_infix4Context ctx) {
+        if (ctx instanceof WdlParser.ModContext) {
+            return visitMod((WdlParser.ModContext) ctx);
+        } else if (ctx instanceof WdlParser.MulContext) {
+            return visitMul((WdlParser.MulContext) ctx);
+        } else if (ctx instanceof WdlParser.DivideContext) {
+            return visitDivide((WdlParser.DivideContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix5Context) {
+            return (Expression) visitInfix5((WdlParser.Infix5Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
     }
 
     @Override
