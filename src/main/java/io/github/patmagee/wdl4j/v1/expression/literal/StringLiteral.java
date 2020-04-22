@@ -2,26 +2,21 @@ package io.github.patmagee.wdl4j.v1.expression.literal;
 
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
 import io.github.patmagee.wdl4j.v1.expression.Expression;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Value
 public class StringLiteral extends Expression {
 
+    @NonNull
     public final List<StringPart> stringParts;
 
-    public StringLiteral(List<StringPart> stringParts) {
-        if (stringParts == null) {
-            stringParts = Collections.emptyList();
-        }
-        this.stringParts = stringParts;
-    }
-
-    public List<StringPart> getStringParts() {
-        return stringParts;
-    }
-
+    @Getter
+    @ToString
+    @EqualsAndHashCode
     public static class StringPart implements WdlElement {
 
         private final String stringPart;
@@ -41,17 +36,12 @@ public class StringLiteral extends Expression {
             this.placeholders = placeholders;
             this.expression = expression;
         }
+    }
 
-        public String getStringPart() {
-            return stringPart;
+    public StringLiteral(List<StringPart> stringParts) {
+        if (stringParts == null) {
+            stringParts = Collections.emptyList();
         }
-
-        public Expression getExpression() {
-            return expression;
-        }
-
-        public List<Expression> getPlaceholders() {
-            return placeholders;
-        }
+        this.stringParts = stringParts;
     }
 }

@@ -1,34 +1,17 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import java.util.Objects;
+import lombok.NonNull;
+import lombok.Value;
 
+@Value
 public class BinaryExpression extends Expression {
 
+    @NonNull
     private final Expression leftHandSide;
+    @NonNull
     private final Expression rightHandSide;
+    @NonNull
     private final BinaryOperation operation;
-
-    public BinaryExpression(Expression leftHandSide, Expression rightHandSide, BinaryOperation operation) {
-        Objects.requireNonNull(leftHandSide,"Left hand side expresion cannot be null");
-        Objects.requireNonNull(rightHandSide, "Right hand side expression cannot be null");
-        Objects.requireNonNull(operation,"The Binary operation cannot be null");
-
-        this.leftHandSide = leftHandSide;
-        this.rightHandSide = rightHandSide;
-        this.operation = operation;
-    }
-
-    public Expression getLeftHandSide() {
-        return leftHandSide;
-    }
-
-    public Expression getRightHandSide() {
-        return rightHandSide;
-    }
-
-    public BinaryOperation getOperation() {
-        return operation;
-    }
 
     public enum BinaryOperation {
         ADD,

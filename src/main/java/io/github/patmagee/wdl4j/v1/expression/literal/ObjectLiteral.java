@@ -1,22 +1,14 @@
 package io.github.patmagee.wdl4j.v1.expression.literal;
 
 import io.github.patmagee.wdl4j.v1.expression.Expression;
+import lombok.NonNull;
+import lombok.Value;
 
-import java.util.Collections;
 import java.util.Map;
 
+@Value
 public class ObjectLiteral extends Expression {
 
-    private final Map<String,Expression> values;
-
-    public ObjectLiteral(Map<String, Expression> values) {
-        if (values == null){
-            values = Collections.emptyMap();
-        }
-        this.values = values;
-    }
-
-    public Map<String, Expression> getValues() {
-        return values;
-    }
+    @NonNull
+    private final Map<String, Expression> values;
 }

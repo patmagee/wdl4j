@@ -1,92 +1,60 @@
 package io.github.patmagee.wdl4j.v1;
 
+import io.github.patmagee.wdl4j.v1.api.WdlElement;
 import io.github.patmagee.wdl4j.v1.api.WorkflowElement;
 import io.github.patmagee.wdl4j.v1.expression.Expression;
+import lombok.*;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class Conditional implements WorkflowElement {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(builderMethodName = "newBuilder")
+public class Conditional implements WorkflowElement{
 
-    private final Expression expression;
-    private final List<Declaration> declarations;
-    private final List<WorkflowElement> elements;
+    @NonNull
+    private Expression expression;
+    private List<WdlElement> elements;
 
-    public Conditional(Expression expression, List<Declaration> declarations, List<WorkflowElement> elements) {
-        Objects.requireNonNull(expression, "The expression of a Conditional workflow element cannot be null");
-        this.expression = expression;
-        this.declarations = declarations;
-        this.elements = elements;
-    }
-
-    private Conditional(Builder builder) {
-        expression = builder.expression;
-        declarations = builder.declarations;
-        elements = builder.elements;
-    }
-
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    public Expression getExpression() {
-        return expression;
-    }
 
     public List<Declaration> getDeclarations() {
-        return declarations;
+
+        return elements == null
+               ? null
+               : elements.stream()
+                         .filter(element -> element instanceof Declaration)
+                         .map(element -> (Declaration) element)
+                         .collect(Collectors.toList());
     }
 
-    public List<WorkflowElement> getElements() {
-        return elements;
+    public List<Scatter> getScatters() {
+        return elements == null
+               ? null
+               : elements.stream()
+                         .filter(element -> element instanceof Scatter)
+                         .map(elements -> (Scatter) elements)
+                         .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Conditional that = (Conditional) o;
-        return expression.equals(that.expression) && Objects.equals(declarations, that.declarations) && Objects.equals(
-                elements,
-                that.elements);
+    public List<Conditional> getConditionals() {
+
+        return elements == null
+               ? null
+               : elements.stream()
+                         .filter(element -> element instanceof Conditional)
+                         .map(elements -> (Conditional) elements)
+                         .collect(Collectors.toList());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(expression, declarations, elements);
+    public List<Call> getCalls() {
+
+        return elements == null
+               ? null
+               : elements.stream()
+                         .filter(element -> element instanceof Call)
+                         .map(elements -> (Call) elements)
+                         .collect(Collectors.toList());
     }
-
-    public static final class Builder {
-
-        private Expression expression;
-        private List<Declaration> declarations;
-        private List<WorkflowElement> elements;
-
-        private Builder() {
-        }
-
-        public Builder withExpression(Expression val) {
-            expression = val;
-            return this;
-        }
-
-        public Builder withDeclarations(List<Declaration> val) {
-            declarations = val;
-            return this;
-        }
-
-        public Builder withElements(List<WorkflowElement> val) {
-            elements = val;
-            return this;
-        }
-
-        public Conditional build() {
-            return new Conditional(this);
-        }
-    }
-
 }

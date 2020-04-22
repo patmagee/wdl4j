@@ -14,19 +14,17 @@ public class WdlAggregatingErrorListener extends BaseErrorListener {
 
     private URI context;
 
-
-    public WdlAggregatingErrorListener(URI context){
+    public WdlAggregatingErrorListener(URI context) {
         this.context = context;
     }
 
-    public WdlAggregatingErrorListener(){
+    public WdlAggregatingErrorListener() {
         this.context = null;
     }
 
-
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-        SyntaxError error = new SyntaxError(context,offendingSymbol, line, charPositionInLine, msg);
+        SyntaxError error = new SyntaxError(context, offendingSymbol, line, charPositionInLine, msg);
         errors.add(error);
     }
 
@@ -37,6 +35,5 @@ public class WdlAggregatingErrorListener extends BaseErrorListener {
     public boolean hasErrors() {
         return errors != null && errors.size() > 0;
     }
-
 
 }

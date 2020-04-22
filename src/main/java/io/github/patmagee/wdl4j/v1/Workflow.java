@@ -1,146 +1,71 @@
 package io.github.patmagee.wdl4j.v1;
 
+import io.github.patmagee.wdl4j.v1.api.NamedElement;
+import io.github.patmagee.wdl4j.v1.api.NamespaceElement;
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
-import io.github.patmagee.wdl4j.v1.api.WorkflowElement;
+import lombok.*;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
-public class Workflow implements WdlElement {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(builderMethodName = "newBuilder")
+public class Workflow extends AbstractNamespaceElement implements WdlElement, NamespaceElement, NamedElement {
 
-    private final String name;
-    private final Inputs inputs;
-    private final List<Declaration> declarations;
-    private final List<WorkflowElement> elements;
-    private final Outputs outputs;
-    private final Meta meta;
-    private final ParameterMeta parameterMeta;
-
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    public Workflow(String name, Inputs inputs, List<Declaration> declarations, List<WorkflowElement> elements, Outputs outputs, Meta meta, ParameterMeta parameterMeta) {
-        Objects.requireNonNull(name, "The workflow name cannot be null");
-        this.name = name;
-        this.inputs = inputs;
-        this.declarations = declarations;
-        this.elements = elements;
-        this.outputs = outputs;
-        this.meta = meta;
-        this.parameterMeta = parameterMeta;
-    }
-
-    private Workflow(Builder builder) {
-        name = builder.name;
-        inputs = builder.inputs;
-        declarations = builder.declarations;
-        elements = builder.elements;
-        outputs = builder.outputs;
-        meta = builder.meta;
-        parameterMeta = builder.parameterMeta;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Inputs getInputs() {
-        return inputs;
-    }
-
-    public List<Declaration> getDeclarations() {
-        return declarations;
-    }
-
-    public List<WorkflowElement> getElements() {
-        return elements;
-    }
-
-    public Outputs getOutputs() {
-        return outputs;
-    }
-
-    public Meta getMeta() {
-        return meta;
-    }
-
-    public ParameterMeta getParameterMeta() {
-        return parameterMeta;
-    }
+    @NonNull
+    private String name;
+    private Inputs inputs;
+    private List<WdlElement> elements;
+    private Outputs outputs;
+    private Meta meta;
+    private ParameterMeta parameterMeta;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    public WdlElement lookupElement(String name) {
+        if (inputs != null && inputs.getDeclarations() != null) {
+            Optional<Declaration> input = inputs.getDeclarations()
+                                                .stream()
+                                                .filter(dec -> dec.getName().equals(name))
+                                                .findFirst();
+            if (input.isPresent()) {
+                return input.get();
+            }
+        } else if (outputs != null && outputs.getDeclarations() != null) {
+            Optional<Declaration> output = outputs.getDeclarations()
+                                                  .stream()
+                                                  .filter(dec -> dec.getName().equals(name))
+                                                  .findFirst();
+            if (output.isPresent()) {
+                return output.get();
+            }
+        } else if (elements != null) {
+
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Workflow workflow = (Workflow) o;
-        return name.equals(workflow.name) && Objects.equals(inputs, workflow.inputs) && Objects.equals(declarations,
-                                                                                                       workflow.declarations) && Objects
-                       .equals(elements, workflow.elements) && Objects.equals(outputs,
-                                                                              workflow.outputs) && Objects.equals(meta,
-                                                                                                                  workflow.meta) && Objects
-                       .equals(parameterMeta, workflow.parameterMeta);
+
+        return super.lookupElement(name);
+
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, inputs, declarations, elements, outputs, meta, parameterMeta);
-    }
-
-    public static final class Builder {
-
-        private String name;
-        private Inputs inputs;
-        private List<Declaration> declarations;
-        private List<WorkflowElement> elements;
-        private Outputs outputs;
-        private Meta meta;
-        private ParameterMeta parameterMeta;
-
-        private Builder() {
+    private WdlElement lookupInInnerElements(String name, List<WdlElement> elements) {
+        if (elements == null) {
+            return null;
         }
 
-        public Builder withName(String val) {
-            name = val;
-            return this;
-        }
+        for (WdlElement element : elements) {
 
-        public Builder withInputs(Inputs val) {
-            inputs = val;
-            return this;
-        }
+            if (element instanceof Call && ((Call) element).getName().equals(name)) {
+                return getParentNamespace().lookupElement(((Call) element).getTaskName());
+            } else if (element instanceof Scatter) {
 
-        public Builder withDeclarations(List<Declaration> val) {
-            declarations = val;
-            return this;
-        }
+            } else if (element instanceof Conditional) {
 
-        public Builder withElements(List<WorkflowElement> val) {
-            elements = val;
-            return this;
+            } else if (element instanceof Declaration && ((Declaration) element).getName().equals(name) ){
+                return element;
+            }
         }
+        return null;
 
-        public Builder withOutputs(Outputs val) {
-            outputs = val;
-            return this;
-        }
-
-        public Builder withMeta(Meta val) {
-            meta = val;
-            return this;
-        }
-
-        public Builder withParameterMeta(ParameterMeta val) {
-            parameterMeta = val;
-            return this;
-        }
-
-        public Workflow build() {
-            return new Workflow(this);
-        }
     }
 }

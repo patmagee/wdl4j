@@ -1,33 +1,23 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PairType extends Type {
 
-    private final Type leftType;
-    private final Type rightType;
-
-    private PairType(Type leftType, Type rightType) {
-        this.leftType = leftType;
-        this.rightType = rightType;
-    }
-
-    public Type getLeftType() {
-        return leftType;
-    }
-
-    public Type getRightType() {
-        return rightType;
-    }
-
-    @Override
-    public String getTypeName() {
-        return "Pair[" + leftType.getTypeName() + "," + rightType.getTypeName() + "]";
-    }
-
     private final static Set<PairType> INSTANCES = new HashSet<>();
+    @NonNull
+    private final Type leftType;
+    @NonNull
+    private final Type rightType;
 
     public static PairType getType(Type leftType, Type rightType) {
         Objects.requireNonNull(leftType, "The leftType of a pair cannot be null");
@@ -42,5 +32,10 @@ public class PairType extends Type {
         INSTANCES.add(instance);
         return instance;
 
+    }
+
+    @Override
+    public String getTypeName() {
+        return "Pair[" + leftType.getTypeName() + "," + rightType.getTypeName() + "]";
     }
 }

@@ -1,34 +1,23 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ArrayType extends Type {
 
-    private final Type innerType;
-    private final Boolean nonEmpty;
-
-    private ArrayType(Type innerType, boolean nonEmpty) {
-        this.innerType = innerType;
-        this.nonEmpty = nonEmpty;
-    }
-
-    public Type getInnerType() {
-        return innerType;
-    }
-
-    public Boolean getNonEmpty() {
-        return nonEmpty;
-    }
-
-    @Override
-    public String getTypeName() {
-        return "Array[" + innerType.getTypeName() + "]" + (nonEmpty ? "+" : "");
-    }
-
-
     private final static Set<ArrayType> INSTANCES = new HashSet<>();
+    @NonNull
+    private final Type innerType;
+    @NonNull
+    private final Boolean nonEmpty;
 
     public static ArrayType getType(Type innerType, boolean nonEmpty) {
         Objects.requireNonNull(innerType, "The innertype of an ArrayType cannot be null");
@@ -41,5 +30,10 @@ public class ArrayType extends Type {
         ArrayType instance = new ArrayType(innerType, nonEmpty);
         INSTANCES.add(instance);
         return instance;
+    }
+
+    @Override
+    public String getTypeName() {
+        return "Array[" + innerType.getTypeName() + "]" + (nonEmpty ? "+" : "");
     }
 }

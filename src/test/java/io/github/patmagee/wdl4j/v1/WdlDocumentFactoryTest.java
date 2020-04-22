@@ -1,5 +1,8 @@
 package io.github.patmagee.wdl4j.v1;
 
+import io.github.patmagee.wdl4j.v1.expression.BinaryExpression;
+import io.github.patmagee.wdl4j.v1.expression.Expression;
+import io.github.patmagee.wdl4j.v1.expression.literal.IntLiteral;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +23,9 @@ class WdlDocumentFactoryTest {
 
         WdlV1DocumentFactory documentFactory = new WdlV1DocumentFactory();
         Document document = documentFactory.create(wdl);
-        Assertions.assertEquals("1.0",document.getVersion().getRelease());
-        Assertions.assertEquals("a",document.getWorkflow().getName());
-        Assertions.assertEquals(1,document.getWorkflow().getInputs().getDeclarations().size());
+        Assertions.assertEquals("1.0", document.getVersion().getRelease());
+        Assertions.assertEquals("a", document.getWorkflow().getName());
+        Assertions.assertEquals(1, document.getWorkflow().getInputs().getDeclarations().size());
     }
 
     @Test
@@ -36,7 +39,7 @@ class WdlDocumentFactoryTest {
         Document document = documentFactory.create(wdlFile.toURI());
         Assertions.assertEquals("1.0", document.getVersion().getRelease());
         Assertions.assertEquals("a", document.getWorkflow().getName());
-        Assertions.assertEquals(1,document.getWorkflow().getInputs().getDeclarations().size());
+        Assertions.assertEquals(1, document.getWorkflow().getInputs().getDeclarations().size());
     }
 
     @Test
@@ -64,6 +67,16 @@ class WdlDocumentFactoryTest {
         Assertions.assertNotNull(document.getImportedDocuments());
         Assertions.assertTrue(document.getImportedDocuments().keySet().contains("file2"));
 
+    }
+
+
+    @Test
+    public void testblah() throws IOException {
+//        String wdl = "version 1.0\n" + "\n" + "workflow X {\n" + "  Int a\n" + "}";
+        String wdl= "version 1.0\n" + "task bar {\n" + "  input {\n" + "    Int a\n" + "    Int b\n" + "  }\n" + "  command {}\n" + "}\n" + "workflow foo {\n" + "  call bar { input: a = 3, b = 5, }\n" + "}";
+        WdlV1DocumentFactory documentFactory = new WdlV1DocumentFactory();
+        Document document = documentFactory.create(wdl);
+        document.getVersion();
     }
 
 }

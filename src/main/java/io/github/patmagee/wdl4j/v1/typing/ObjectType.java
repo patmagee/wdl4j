@@ -4,12 +4,12 @@ public class ObjectType extends Type {
 
     private static final ObjectType INSTANCE = new ObjectType();
 
-    private ObjectType() {
-
-    }
-
     public static ObjectType getType() {
         return INSTANCE;
+    }
+
+    private ObjectType() {
+
     }
 
     @Override

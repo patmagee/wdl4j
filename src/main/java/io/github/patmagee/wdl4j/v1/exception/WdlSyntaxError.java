@@ -27,6 +27,10 @@ public class WdlSyntaxError extends RuntimeException {
         this.errors = new ArrayList<>(syntaxErrors);
     }
 
+    private String getErrorString() {
+        return "\n" + String.join("\n", errors.stream().map(SyntaxError::toString).collect(Collectors.toList()));
+    }
+
     public List<SyntaxError> getErrors() {
         return errors;
     }
@@ -37,10 +41,6 @@ public class WdlSyntaxError extends RuntimeException {
         } else {
             return super.getMessage();
         }
-    }
-
-    private String getErrorString() {
-        return "\n" + String.join("\n", errors.stream().map(SyntaxError::toString).collect(Collectors.toList()));
     }
 
 }

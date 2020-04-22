@@ -4,12 +4,12 @@ public class IntType extends Type {
 
     private static final IntType INSTANCE = new IntType();
 
-    private IntType(){
-
-    }
-
     public static IntType getType() {
         return INSTANCE;
+    }
+
+    private IntType() {
+
     }
 
     @Override

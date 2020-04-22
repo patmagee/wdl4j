@@ -1,17 +1,13 @@
 package io.github.patmagee.wdl4j.v1.expression;
 
-import java.util.Objects;
+import io.github.patmagee.wdl4j.v1.api.NamedElement;
+import lombok.NonNull;
+import lombok.Value;
 
-public class VariableReference extends Expression {
+@Value
+public class VariableReference extends Expression implements NamedElement {
 
+    @NonNull
     private final String name;
 
-    public VariableReference(String name) {
-        Objects.requireNonNull(name, "The name cannot be null for a VariableReference");
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

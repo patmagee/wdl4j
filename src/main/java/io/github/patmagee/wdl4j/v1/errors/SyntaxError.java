@@ -2,10 +2,7 @@ package io.github.patmagee.wdl4j.v1.errors;
 
 import java.net.URI;
 
-
 public class SyntaxError {
-
-
 
     private final Object offendingSymbol;
     private final int line;
@@ -41,11 +38,10 @@ public class SyntaxError {
         return fileName;
     }
 
-
     @Override
     public String toString() {
         String fileNameString = "";
-        if (fileName != null){
+        if (fileName != null) {
             fileNameString = fileName.toString() + " - ";
 
         }

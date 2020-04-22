@@ -4,12 +4,12 @@ public class FloatType extends Type {
 
     private static final FloatType INSTANCE = new FloatType();
 
-    private FloatType(){
-
-    }
-
     public static FloatType getType() {
         return INSTANCE;
+    }
+
+    private FloatType() {
+
     }
 
     @Override

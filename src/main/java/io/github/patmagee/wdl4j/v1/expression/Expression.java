@@ -4,6 +4,5 @@ import io.github.patmagee.wdl4j.v1.api.WdlElement;
 
 public abstract class Expression implements WdlElement {
 
-
 }
 

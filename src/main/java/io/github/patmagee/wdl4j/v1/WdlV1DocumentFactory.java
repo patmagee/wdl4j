@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class WdlV1DocumentFactory {
@@ -30,60 +29,8 @@ public class WdlV1DocumentFactory {
     }
 
     public WdlV1DocumentFactory(List<WdlResolver> wdlResolvers) {
-        Objects.requireNonNull(wdlResolvers,"WdlResolvers cannot be null");
+        Objects.requireNonNull(wdlResolvers, "WdlResolvers cannot be null");
         this.wdlResolvers = wdlResolvers;
-    }
-
-    public void setWdlResolvers(List<WdlResolver> wdlResolvers) {
-        Objects.requireNonNull(wdlResolvers,"WdlResolvers cannot be null");
-        this.wdlResolvers = wdlResolvers;
-    }
-
-    public void addImportResolver(WdlResolver wdlResolver) {
-        wdlResolvers.add(wdlResolver);
-    }
-
-    public Document create(String wdl) throws IOException {
-        WdlParser parser = getParser(wdl);
-        return parseWdlIntoDocument(parser, null);
-    }
-
-    public Document create(URI wdlPath) throws IOException {
-        String resolvedWdl = resolveWdlToString(wdlPath, null);
-        WdlParser parser = getParser(resolvedWdl);
-        return parseWdlIntoDocument(parser, wdlPath);
-
-    }
-
-    public Document createAndImport(String wdl) throws IOException {
-        Document document = create(wdl);
-        return resolveImports(document, null);
-    }
-
-    public Document createAndImport(URI wdlPath) throws IOException {
-        Document document = create(wdlPath);
-        return resolveImports(document, wdlPath);
-    }
-
-    public Document resolveImports(Document wdl, URI uriContext) throws IOException {
-        List<Import> imports = wdl.getImports();
-        if (imports != null && imports.size() > 0) {
-            Map<String, Document> importedDocuments = new HashMap<>();
-            for (Import wdlImport : imports) {
-                URI resolvedImportUri = wdlImport.resolveImportUri();
-                if (uriContext != null) {
-                    resolvedImportUri = uriContext.resolve(resolvedImportUri);
-                }
-                Document imported = createAndImport(resolvedImportUri);
-                if (wdlImport.getName() != null) {
-                    importedDocuments.put(wdlImport.getName(), imported);
-                } else {
-                    importedDocuments.put(UriUtils.getImportNamepsaceFromUri(resolvedImportUri), imported);
-                }
-            }
-            wdl.setImportedDocuments(importedDocuments);
-        }
-        return wdl;
     }
 
     private String resolveWdlToString(URI uri, URI context) throws WdlResolutionException {
@@ -134,5 +81,57 @@ public class WdlV1DocumentFactory {
         CodePointBuffer codePointBuffer = CodePointBuffer.withBytes(ByteBuffer.wrap(inp.getBytes()));
         WdlLexer lexer = new WdlLexer(CodePointCharStream.fromBuffer(codePointBuffer));
         return new WdlParser(new CommonTokenStream(lexer));
+    }
+
+    public void setWdlResolvers(List<WdlResolver> wdlResolvers) {
+        Objects.requireNonNull(wdlResolvers, "WdlResolvers cannot be null");
+        this.wdlResolvers = wdlResolvers;
+    }
+
+    public void addImportResolver(WdlResolver wdlResolver) {
+        wdlResolvers.add(wdlResolver);
+    }
+
+    public Document create(String wdl) throws IOException {
+        WdlParser parser = getParser(wdl);
+        return parseWdlIntoDocument(parser, null);
+    }
+
+    public Document create(URI wdlPath) throws IOException {
+        String resolvedWdl = resolveWdlToString(wdlPath, null);
+        WdlParser parser = getParser(resolvedWdl);
+        return parseWdlIntoDocument(parser, wdlPath);
+
+    }
+
+    public Document createAndImport(String wdl) throws IOException {
+        Document document = create(wdl);
+        return resolveImports(document, null);
+    }
+
+    public Document createAndImport(URI wdlPath) throws IOException {
+        Document document = create(wdlPath);
+        return resolveImports(document, wdlPath);
+    }
+
+    public Document resolveImports(Document wdl, URI uriContext) throws IOException {
+        List<Import> imports = wdl.getImports();
+        if (imports != null && imports.size() > 0) {
+            Map<String, Document> importedDocuments = new HashMap<>();
+            for (Import wdlImport : imports) {
+                URI resolvedImportUri = wdlImport.resolveImportUri();
+                if (uriContext != null) {
+                    resolvedImportUri = uriContext.resolve(resolvedImportUri);
+                }
+                Document imported = createAndImport(resolvedImportUri);
+                if (wdlImport.getName() != null) {
+                    importedDocuments.put(wdlImport.getName(), imported);
+                } else {
+                    importedDocuments.put(UriUtils.getImportNamepsaceFromUri(resolvedImportUri), imported);
+                }
+            }
+            wdl.setImportedDocuments(importedDocuments);
+        }
+        return wdl;
     }
 }

@@ -4,12 +4,12 @@ public class FileType extends Type {
 
     private static final FileType INSTANCE = new FileType();
 
-    private FileType(){
-
-    }
-
     public static FileType getType() {
         return INSTANCE;
+    }
+
+    private FileType() {
+
     }
 
     @Override

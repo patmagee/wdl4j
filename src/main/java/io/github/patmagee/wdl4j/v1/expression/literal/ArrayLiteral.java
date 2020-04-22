@@ -1,22 +1,15 @@
 package io.github.patmagee.wdl4j.v1.expression.literal;
 
 import io.github.patmagee.wdl4j.v1.expression.Expression;
+import lombok.NonNull;
+import lombok.Value;
 
-import java.util.Collections;
 import java.util.List;
 
+@Value
 public class ArrayLiteral extends Expression {
 
+    @NonNull
     private final List<Expression> values;
 
-    public ArrayLiteral(List<Expression> values) {
-        if (values == null) {
-            values = Collections.emptyList();
-        }
-        this.values = values;
-    }
-
-    public List<Expression> getValues() {
-        return values;
-    }
 }

@@ -1,5 +1,6 @@
 package io.github.patmagee.wdl4j.v1;
 
+import io.github.patmagee.wdl4j.v1.api.NamespaceElement;
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
 import io.github.patmagee.wdl4j.v1.api.WorkflowElement;
 import io.github.patmagee.wdl4j.v1.expression.*;
@@ -14,6 +15,85 @@ import java.util.List;
 import java.util.Map;
 
 public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
+
+    private Expression visitExpr_infix0(WdlParser.Expr_infix0Context ctx) {
+        if (ctx instanceof WdlParser.LorContext) {
+            return visitLor((WdlParser.LorContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix1Context) {
+            return (Expression) visitInfix1((WdlParser.Infix1Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix1(WdlParser.Expr_infix1Context ctx) {
+        if (ctx instanceof WdlParser.LandContext) {
+            return visitLand((WdlParser.LandContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix2Context) {
+            return (Expression) visitInfix2((WdlParser.Infix2Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix2(WdlParser.Expr_infix2Context ctx) {
+        if (ctx instanceof WdlParser.EqeqContext) {
+            return visitEqeq((WdlParser.EqeqContext) ctx);
+        } else if (ctx instanceof WdlParser.GteContext) {
+            return visitGte((WdlParser.GteContext) ctx);
+        } else if (ctx instanceof WdlParser.GtContext) {
+            return visitGt((WdlParser.GtContext) ctx);
+        } else if (ctx instanceof WdlParser.LtContext) {
+            return visitLt((WdlParser.LtContext) ctx);
+        } else if (ctx instanceof WdlParser.LteContext) {
+            return visitLte((WdlParser.LteContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix3Context) {
+            return (Expression) visitInfix3((WdlParser.Infix3Context) ctx);
+        } else if (ctx instanceof WdlParser.NeqContext) {
+            return visitNeq((WdlParser.NeqContext) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix3(WdlParser.Expr_infix3Context ctx) {
+        if (ctx instanceof WdlParser.AddContext) {
+            return visitAdd((WdlParser.AddContext) ctx);
+        } else if (ctx instanceof WdlParser.SubContext) {
+            return visitSub((WdlParser.SubContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix4Context) {
+            return (Expression) visitInfix4((WdlParser.Infix4Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Expression visitExpr_infix4(WdlParser.Expr_infix4Context ctx) {
+        if (ctx instanceof WdlParser.ModContext) {
+            return visitMod((WdlParser.ModContext) ctx);
+        } else if (ctx instanceof WdlParser.MulContext) {
+            return visitMul((WdlParser.MulContext) ctx);
+        } else if (ctx instanceof WdlParser.DivideContext) {
+            return visitDivide((WdlParser.DivideContext) ctx);
+        } else if (ctx instanceof WdlParser.Infix5Context) {
+            return (Expression) visitInfix5((WdlParser.Infix5Context) ctx);
+        } else {
+            return (Expression) visitChildren(ctx);
+        }
+    }
+
+    private Map<String, Expression> visitKeyValueConetxt(List<WdlParser.Meta_kvContext> ctx) {
+        Map<String, Expression> attributes = new HashMap<>();
+        if (ctx != null) {
+            for (int i = 0; i < ctx.size(); i++) {
+                WdlParser.Meta_kvContext kvContext = ctx.get(i);
+                String key = kvContext.Identifier().getText();
+                Expression value = visitExpr(kvContext.expr());
+                attributes.put(key, value);
+            }
+        }
+        return attributes;
+    }
 
     @Override
     public Type visitType_base(WdlParser.Type_baseContext ctx) {
@@ -71,7 +151,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
     public Declaration visitUnbound_decls(WdlParser.Unbound_declsContext ctx) {
         Type type = visitWdl_type(ctx.wdl_type());
         String name = ctx.Identifier().getText();
-        return new Declaration(type, name);
+        return new Declaration(type, name, null);
     }
 
     @Override
@@ -258,72 +338,6 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                                     BinaryExpression.BinaryOperation.DIVIDE);
     }
 
-    private Expression visitExpr_infix0(WdlParser.Expr_infix0Context ctx) {
-        if (ctx instanceof WdlParser.LorContext) {
-            return visitLor((WdlParser.LorContext) ctx);
-        } else if (ctx instanceof WdlParser.Infix1Context) {
-            return (Expression) visitInfix1((WdlParser.Infix1Context) ctx);
-        } else {
-            return (Expression) visitChildren(ctx);
-        }
-    }
-
-    private Expression visitExpr_infix1(WdlParser.Expr_infix1Context ctx) {
-        if (ctx instanceof WdlParser.LandContext) {
-            return visitLand((WdlParser.LandContext) ctx);
-        } else if (ctx instanceof WdlParser.Infix2Context) {
-            return (Expression) visitInfix2((WdlParser.Infix2Context) ctx);
-        } else {
-            return (Expression) visitChildren(ctx);
-        }
-    }
-
-    private Expression visitExpr_infix2(WdlParser.Expr_infix2Context ctx) {
-        if (ctx instanceof WdlParser.EqeqContext) {
-            return visitEqeq((WdlParser.EqeqContext) ctx);
-        } else if (ctx instanceof WdlParser.GteContext) {
-            return visitGte((WdlParser.GteContext) ctx);
-        } else if (ctx instanceof WdlParser.GtContext) {
-            return visitGt((WdlParser.GtContext) ctx);
-        } else if (ctx instanceof WdlParser.LtContext) {
-            return visitLt((WdlParser.LtContext) ctx);
-        } else if (ctx instanceof WdlParser.LteContext) {
-            return visitLte((WdlParser.LteContext) ctx);
-        } else if (ctx instanceof WdlParser.Infix3Context) {
-            return (Expression) visitInfix3((WdlParser.Infix3Context) ctx);
-        } else if (ctx instanceof WdlParser.NeqContext) {
-            return visitNeq((WdlParser.NeqContext) ctx);
-        } else {
-            return (Expression) visitChildren(ctx);
-        }
-    }
-
-    private Expression visitExpr_infix3(WdlParser.Expr_infix3Context ctx) {
-        if (ctx instanceof WdlParser.AddContext) {
-            return visitAdd((WdlParser.AddContext) ctx);
-        } else if (ctx instanceof WdlParser.SubContext) {
-            return visitSub((WdlParser.SubContext) ctx);
-        } else if (ctx instanceof WdlParser.Infix4Context) {
-            return (Expression) visitInfix4((WdlParser.Infix4Context) ctx);
-        } else {
-            return (Expression) visitChildren(ctx);
-        }
-    }
-
-    private Expression visitExpr_infix4(WdlParser.Expr_infix4Context ctx) {
-        if (ctx instanceof WdlParser.ModContext) {
-            return visitMod((WdlParser.ModContext) ctx);
-        } else if (ctx instanceof WdlParser.MulContext) {
-            return visitMul((WdlParser.MulContext) ctx);
-        } else if (ctx instanceof WdlParser.DivideContext) {
-            return visitDivide((WdlParser.DivideContext) ctx);
-        } else if (ctx instanceof WdlParser.Infix5Context) {
-            return (Expression) visitInfix5((WdlParser.Infix5Context) ctx);
-        } else {
-            return (Expression) visitChildren(ctx);
-        }
-    }
-
     @Override
     public PairLiteral visitPair_literal(WdlParser.Pair_literalContext ctx) {
         Expression left = visitExpr(ctx.expr(0));
@@ -443,7 +457,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
 
     @Override
     public Import visitImport_doc(WdlParser.Import_docContext ctx) {
-        StringLiteral importUrl = visitString(ctx.string());
+        String importUrl = ctx.string().getText();
         String name = null;
         if (ctx.import_as() != null) {
             name = ctx.import_as().Identifier().getText();
@@ -454,7 +468,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 aliases.add(visitImport_alias(ctx.import_alias(i)));
             }
         }
-        return Import.newBuilder().withUrl(importUrl).withName(name).withAliases(aliases).build();
+        return Import.newBuilder().url(importUrl).name(name).aliases(aliases).build();
     }
 
     @Override
@@ -466,31 +480,18 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 members.add(visitUnbound_decls(ctx.unbound_decls(i)));
             }
         }
-        return Struct.newBuilder().withName(name).withMembers(members).build();
+        return Struct.newBuilder().name(name).members(members).build();
 
     }
 
     @Override
     public ParameterMeta visitParameter_meta(WdlParser.Parameter_metaContext ctx) {
-        return ParameterMeta.newBuilder().withAttributes(visitKeyValueConetxt(ctx.meta_kv())).build();
+        return ParameterMeta.newBuilder().attributes(visitKeyValueConetxt(ctx.meta_kv())).build();
     }
 
     @Override
     public Meta visitMeta(WdlParser.MetaContext ctx) {
-        return Meta.newBuilder().withAttributes(visitKeyValueConetxt(ctx.meta_kv())).build();
-    }
-
-    private Map<String, Expression> visitKeyValueConetxt(List<WdlParser.Meta_kvContext> ctx) {
-        Map<String, Expression> attributes = new HashMap<>();
-        if (ctx != null) {
-            for (int i = 0; i < ctx.size(); i++) {
-                WdlParser.Meta_kvContext kvContext = ctx.get(i);
-                String key = kvContext.Identifier().getText();
-                Expression value = visitExpr(kvContext.expr());
-                attributes.put(key, value);
-            }
-        }
-        return attributes;
+        return Meta.newBuilder().attributes(visitKeyValueConetxt(ctx.meta_kv())).build();
     }
 
     @Override
@@ -504,7 +505,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 attributes.put(key, value);
             }
         }
-        return Runtime.newBuilder().withAttributes(attributes).build();
+        return Runtime.newBuilder().attributes(attributes).build();
     }
 
     @Override
@@ -515,7 +516,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 declarations.add(visitAny_decls(ctx.any_decls(i)));
             }
         }
-        return Inputs.newBuilder().withDeclarations(declarations).build();
+        return Inputs.newBuilder().declarations(declarations).build();
     }
 
     @Override
@@ -526,7 +527,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 declarations.add(visitBound_decls(ctx.bound_decls(i)));
             }
         }
-        return Outputs.newBuilder().withDeclarations(declarations).build();
+        return Outputs.newBuilder().declarations(declarations).build();
     }
 
     @Override
@@ -555,7 +556,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 }
             }
         }
-        return Command.newBuilder().withCommandParts(commandParts).build();
+        return Command.newBuilder().commandParts(commandParts).build();
     }
 
     @Override
@@ -596,14 +597,14 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
             }
         }
         return Task.newBuilder()
-                   .withName(name)
-                   .withInputs(inputs)
-                   .withDeclarations(declarations)
-                   .withCommand(command)
-                   .withRuntime(runtime)
-                   .withOutputs(outputs)
-                   .withMeta(meta)
-                   .withParameterMeta(parameterMeta)
+                   .name(name)
+                   .inputs(inputs)
+                   .declarations(declarations)
+                   .command(command)
+                   .runtime(runtime)
+                   .outputs(outputs)
+                   .meta(meta)
+                   .parameterMeta(parameterMeta)
                    .build();
     }
 
@@ -623,54 +624,46 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 }
             }
         }
-        return Call.newBuilder().withTaskName(name).withCallAlias(alias).withInputs(inputs).build();
+        return Call.newBuilder().taskName(name).callAlias(alias).inputs(inputs).build();
     }
 
     @Override
     public Scatter visitScatter(WdlParser.ScatterContext ctx) {
-        String varname = ctx.Identifier().getText();
-        Expression expression = visitExpr(ctx.expr());
-        List<Declaration> declarations = new ArrayList<>();
-        List<WorkflowElement> workflowElements = new ArrayList<>();
+        Scatter scatter = new Scatter();
+        scatter.setVarname(ctx.Identifier().getText());
+        scatter.setExpression(visitExpr(ctx.expr()));
+        List<WdlElement> workflowElements = new ArrayList<>();
         if (ctx.inner_workflow_element() != null) {
             for (int i = 0; i < ctx.inner_workflow_element().size(); i++) {
                 WdlElement element = visitChildren(ctx.inner_workflow_element(i));
-                if (element instanceof WorkflowElement) {
-                    workflowElements.add((WorkflowElement) element);
-                } else if (element instanceof Declaration) {
-                    declarations.add((Declaration) element);
-                }
+                //                if (element instanceof NamespaceElement) {
+                //                    ((NamespaceElement) element).setParentNamespace(scatter);
+                //                }
+                workflowElements.add(element);
             }
         }
 
-        return Scatter.newBuilder()
-                      .withVarname(varname)
-                      .withExpression(expression)
-                      .withDeclarations(declarations)
-                      .withWorkflowElements(workflowElements)
-                      .build();
+        scatter.setWorkflowElements(workflowElements);
+        return scatter;
     }
 
     @Override
     public Conditional visitConditional(WdlParser.ConditionalContext ctx) {
-        Expression condition = visitExpr(ctx.expr());
-        List<Declaration> declarations = new ArrayList<>();
-        List<WorkflowElement> workflowElements = new ArrayList<>();
+        Conditional conditional = new Conditional();
+        conditional.setExpression(visitExpr(ctx.expr()));
+        List<WdlElement> workflowElements = new ArrayList<>();
         if (ctx.inner_workflow_element() != null) {
             for (int i = 0; i < ctx.inner_workflow_element().size(); i++) {
                 WdlElement element = visitChildren(ctx.inner_workflow_element(i));
-                if (element instanceof WorkflowElement) {
-                    workflowElements.add((WorkflowElement) element);
-                } else if (element instanceof Declaration) {
-                    declarations.add((Declaration) element);
-                }
+                //                if (element instanceof NamespaceElement) {
+                //                    ((NamespaceElement) element).setParentNamespace(conditional);
+                //                }
+                workflowElements.add(element);
             }
         }
-        return Conditional.newBuilder()
-                          .withExpression(condition)
-                          .withDeclarations(declarations)
-                          .withElements(workflowElements)
-                          .build();
+
+        conditional.setElements(workflowElements);
+        return conditional;
     }
 
     @Override
@@ -681,7 +674,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 declarations.add(visitAny_decls(ctx.any_decls(i)));
             }
         }
-        return Inputs.newBuilder().withDeclarations(declarations).build();
+        return Inputs.newBuilder().declarations(declarations).build();
     }
 
     @Override
@@ -692,7 +685,7 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 declarations.add(visitBound_decls(ctx.bound_decls(i)));
             }
         }
-        return Outputs.newBuilder().withDeclarations(declarations).build();
+        return Outputs.newBuilder().declarations(declarations).build();
     }
 
     @Override
@@ -717,13 +710,13 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
 
     @Override
     public Workflow visitWorkflow(WdlParser.WorkflowContext ctx) {
-        String name = ctx.Identifier().getText();
-        List<WorkflowElement> elements = new ArrayList<>();
-        List<Declaration> declarations = new ArrayList<>();
+        Workflow workflow = new Workflow();
+        workflow.setName(ctx.Identifier().getText());
         Inputs inputs = null;
         Outputs outputs = null;
         ParameterMeta parameterMeta = null;
         Meta meta = null;
+        List<WdlElement> elements = new ArrayList<>();
 
         for (WdlParser.Workflow_elementContext elementContext : ctx.workflow_element()) {
             WdlElement element = visitChildren(elementContext);
@@ -731,26 +724,24 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
                 inputs = (Inputs) element;
             } else if (element instanceof Outputs) {
                 outputs = (Outputs) element;
-            } else if (element instanceof Declaration) {
-                declarations.add((Declaration) element);
-            } else if (element instanceof WorkflowElement) {
-                elements.add((WorkflowElement) element);
             } else if (element instanceof Meta) {
                 meta = (Meta) element;
             } else if (element instanceof ParameterMeta) {
                 parameterMeta = (ParameterMeta) element;
+            } else if (element instanceof WdlElement) {
+                if (element instanceof NamespaceElement) {
+                    ((NamespaceElement) element).setParentNamespace(workflow);
+                }
+                elements.add(element);
             }
         }
 
-        return Workflow.newBuilder()
-                       .withName(name)
-                       .withInputs(inputs)
-                       .withDeclarations(declarations)
-                       .withElements(elements)
-                       .withOutputs(outputs)
-                       .withMeta(meta)
-                       .withParameterMeta(parameterMeta)
-                       .build();
+        workflow.setInputs(inputs);
+        workflow.setOutputs(outputs);
+        workflow.setElements(elements);
+        workflow.setMeta(meta);
+        workflow.setParameterMeta(parameterMeta);
+        return workflow;
     }
 
     @Override
@@ -760,12 +751,21 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
 
     @Override
     public Document visitDocument(WdlParser.DocumentContext ctx) {
-        Version version = visitVersion(ctx.version());
+        Document document = new Document();
+        document.setVersion(visitVersion(ctx.version()));
+
         List<Import> imports = new ArrayList<>();
         List<Struct> structs = new ArrayList<>();
         List<Task> tasks = new ArrayList<>();
 
         Workflow workflow = ctx.workflow() != null ? visitWorkflow(ctx.workflow()) : null;
+
+        if (workflow != null) {
+            workflow.setParentNamespace(document);
+        }
+
+        document.setWorkflow(workflow);
+
         for (WdlParser.Document_elementContext elementContext : ctx.document_element()) {
             WdlElement element = visitChildren(elementContext);
             if (element instanceof Import) {
@@ -777,12 +777,10 @@ public class WdlV1DocumentVisitor extends WdlParserBaseVisitor<WdlElement> {
             }
         }
 
-        return Document.newBuilder()
-                       .withVersion(version)
-                       .withImports(imports)
-                       .withStructs(structs)
-                       .withTasks(tasks)
-                       .withWorkflow(workflow)
-                       .build();
+        document.setImports(imports);
+        document.setStructs(structs);
+        tasks.forEach(task -> task.setParentNamespace(document));
+        document.setTasks(tasks);
+        return document;
     }
 }

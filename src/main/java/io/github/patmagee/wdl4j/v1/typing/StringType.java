@@ -4,12 +4,12 @@ public class StringType extends Type {
 
     private static final StringType INSTANCE = new StringType();
 
-    private StringType() {
-
-    }
-
     public static StringType getType() {
         return INSTANCE;
+    }
+
+    private StringType() {
+
     }
 
     @Override
