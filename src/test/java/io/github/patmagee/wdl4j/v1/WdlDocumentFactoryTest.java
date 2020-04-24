@@ -3,6 +3,7 @@ package io.github.patmagee.wdl4j.v1;
 import io.github.patmagee.wdl4j.v1.expression.BinaryExpression;
 import io.github.patmagee.wdl4j.v1.expression.Expression;
 import io.github.patmagee.wdl4j.v1.expression.literal.IntLiteral;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -51,6 +52,7 @@ class WdlDocumentFactoryTest {
         Assertions.assertNotNull(document.getVersion());
     }
 
+    @Ignore
     @Test
     public void testImportsResolveFromLocalFiles() throws IOException {
         String wdl = "version 1.0 import \"file2.wdl\" as file2 workflow a { input {String p = 'Happy are those ~{1 + 2}'} }";
@@ -69,14 +71,5 @@ class WdlDocumentFactoryTest {
 
     }
 
-
-    @Test
-    public void testblah() throws IOException {
-//        String wdl = "version 1.0\n" + "\n" + "workflow X {\n" + "  Int a\n" + "}";
-        String wdl= "version 1.0\n" + "task bar {\n" + "  input {\n" + "    Int a\n" + "    Int b\n" + "  }\n" + "  command {}\n" + "}\n" + "workflow foo {\n" + "  call bar { input: a = 3, b = 5, }\n" + "}";
-        WdlV1DocumentFactory documentFactory = new WdlV1DocumentFactory();
-        Document document = documentFactory.create(wdl);
-        document.getVersion();
-    }
 
 }
