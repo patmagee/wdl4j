@@ -1,20 +1,17 @@
 package io.github.patmagee.wdl4j.v1;
 
 import io.github.patmagee.wdl4j.v1.api.NamedElement;
-import io.github.patmagee.wdl4j.v1.api.NamespaceElement;
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
-import io.github.patmagee.wdl4j.v1.exception.NamespaceException;
 import io.github.patmagee.wdl4j.v1.exception.WdlValidationError;
 import lombok.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class Workflow extends AbstractNamespaceElement implements WdlElement, NamespaceElement, NamedElement {
+public class Workflow implements WdlElement, NamedElement {
 
     @NonNull
     private String name;

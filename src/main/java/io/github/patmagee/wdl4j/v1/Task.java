@@ -14,7 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class Task extends AbstractNamespaceElement implements WdlElement, NamedElement {
+public class Task implements WdlElement, NamedElement {
 
     @NonNull
     private String name;

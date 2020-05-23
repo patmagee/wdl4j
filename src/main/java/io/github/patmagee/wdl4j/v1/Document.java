@@ -15,7 +15,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class Document extends AbstractNamespaceElement implements WdlElement {
+public class Document implements WdlElement {
 
     private Version version;
     private List<Import> imports;
