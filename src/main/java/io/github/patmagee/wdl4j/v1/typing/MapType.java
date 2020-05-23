@@ -5,32 +5,64 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapType extends Type {
 
-    private final static Set<MapType> INSTANCES = new HashSet<>();
     @NonNull
     private final Type keyType;
     @NonNull
     private final Type valueType;
 
+    private final List<String> literalNames;
+
     public static MapType getType(Type keyType, Type valueType) {
         Objects.requireNonNull(keyType, "keyType of a MapType cannot be null");
         Objects.requireNonNull(valueType, "valueType of a MapType cannot be null");
-        for (MapType instance : INSTANCES) {
-            if (instance.valueType.equals(valueType) && instance.keyType.equals(keyType)) {
-                return instance;
+        return new MapType(keyType, valueType, null);
+    }
+
+    public static MapType getType(Type keyType, Type valueType, List<String> literalNames) {
+        Objects.requireNonNull(keyType, "keyType of a MapType cannot be null");
+        Objects.requireNonNull(valueType, "valueType of a MapType cannot be null");
+        return new MapType(keyType, valueType, literalNames);
+    }
+
+    @Override
+    public boolean isCoercibleTo(@NonNull Type toType) {
+        if (toType instanceof MapType) {
+            MapType mapToType = (MapType) toType;
+            return keyType.isCoercibleTo(mapToType) && valueType.isCoercibleTo(valueType);
+        } else if (toType instanceof StructType && literalNames != null && !literalNames.isEmpty()) {
+            StructType structToType = (StructType) toType;
+            Map<String, Type> members = structToType.getMembers();
+            if (members == null || members.isEmpty()) {
+                return false;
+            } else if (!members.keySet().containsAll(literalNames)) {
+                return false;
             }
+
+            Set<String> toKeys = new HashSet<>(members.keySet());
+
+            for (String k : literalNames) {
+                if (!(toKeys.contains(k) && members.get(k).isCoercibleTo(valueType))) {
+                    return false;
+                }
+            }
+
+            toKeys.removeAll(literalNames);
+            for (String optionalK : toKeys) {
+                if (!(members.get(optionalK) instanceof OptionalType)) {
+                    return false;
+                }
+            }
+            return true;
+
         }
 
-        MapType instance = new MapType(keyType, valueType);
-        INSTANCES.add(instance);
-        return instance;
+        return super.isCoercibleTo(toType);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package io.github.patmagee.wdl4j.v1.exception;
 
-public class NamespaceException extends RuntimeException {
+public class NamespaceException extends WdlValidationError {
 
     public NamespaceException() {
         super();

@@ -5,30 +5,41 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StructType extends Type {
 
-    private final static Set<StructType> INSTANCES = new HashSet<>();
     @NonNull
     private final String name;
 
+    private final Map<String, Type> members;
+
     public static StructType getType(String name) {
         Objects.requireNonNull(name, "The name of a struct type cannot be null");
+        return new StructType(name, null);
+    }
 
-        for (StructType instance : INSTANCES) {
-            if (instance.name.equals(name)) {
-                return instance;
+    public static StructType getType(String name, Map<String, Type> members) {
+        Objects.requireNonNull(name, "The name of a struct type cannot be null");
+        return new StructType(name, members);
+    }
+
+    @Override
+    public boolean isCoercibleTo(@NonNull Type toType) {
+        if (toType instanceof StructType) {
+            StructType structToType = (StructType) toType;
+            if (structToType.name.equals(name)) {
+                return true;
+            } else if (structToType.getMembers() != null && members != null) {
+                return structToType.members.equals(members);
+            } else {
+                return false;
             }
         }
-
-        StructType instance = new StructType(name);
-        INSTANCES.add(instance);
-        return instance;
+        return super.isCoercibleTo(toType);
     }
 
     @Override

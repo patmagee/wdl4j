@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -20,16 +19,22 @@ public class ArrayType extends Type {
     private final Boolean nonEmpty;
 
     public static ArrayType getType(Type innerType, boolean nonEmpty) {
-        Objects.requireNonNull(innerType, "The innertype of an ArrayType cannot be null");
-        for (ArrayType instance : INSTANCES) {
-            if (instance.innerType.equals(innerType) && nonEmpty == instance.nonEmpty) {
-                return instance;
-            }
-        }
+        return new ArrayType(innerType, nonEmpty);
+    }
 
-        ArrayType instance = new ArrayType(innerType, nonEmpty);
-        INSTANCES.add(instance);
-        return instance;
+    public static ArrayType getType(Type innerType) {
+        return new ArrayType(innerType, false);
+    }
+
+    @Override
+    public boolean isCoercibleTo(@NonNull Type toType) {
+        if (toType instanceof ArrayType) {
+            ArrayType arrayToType = (ArrayType) toType;
+            return (!arrayToType.nonEmpty || nonEmpty) && innerType.isCoercibleTo(arrayToType.innerType);
+        } else if (toType instanceof StringType) {
+            return innerType == null || innerType.isCoercibleTo(StringType.getType());
+        }
+        return super.isCoercibleTo(toType);
     }
 
     @Override

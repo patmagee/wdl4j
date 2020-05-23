@@ -1,5 +1,7 @@
 package io.github.patmagee.wdl4j.v1.typing;
 
+import lombok.NonNull;
+
 public class BooleanType extends Type {
 
     private static final BooleanType INSTANCE = new BooleanType();
@@ -9,6 +11,15 @@ public class BooleanType extends Type {
     }
 
     private BooleanType() {
+    }
+
+    @Override
+    public boolean isCoercibleTo(@NonNull Type toType) {
+        if (toType instanceof StringType){
+            return true;
+        } else  {
+            return super.isCoercibleTo(toType);
+        }
     }
 
     @Override
