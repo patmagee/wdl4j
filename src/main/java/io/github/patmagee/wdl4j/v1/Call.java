@@ -17,6 +17,8 @@ public class Call implements WorkflowElement, NamedElement {
     private String taskName;
     private String callAlias;
     private Map<String, Expression> inputs;
+    @NonNull
+    private int id;
 
     @Override
     public String getName() {

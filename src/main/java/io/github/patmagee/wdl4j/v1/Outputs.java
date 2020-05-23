@@ -1,10 +1,7 @@
 package io.github.patmagee.wdl4j.v1;
 
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,5 +12,8 @@ import java.util.List;
 public class Outputs implements WdlElement {
 
     private List<Declaration> declarations;
+    @NonNull
+    private int id;
+
 
 }

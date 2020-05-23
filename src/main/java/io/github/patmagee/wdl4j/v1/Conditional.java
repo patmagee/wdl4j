@@ -17,6 +17,8 @@ public class Conditional implements WorkflowElement{
     @NonNull
     private Expression expression;
     private List<WdlElement> elements;
+    @NonNull
+    private int id;
 
 
     public List<Declaration> getDeclarations() {

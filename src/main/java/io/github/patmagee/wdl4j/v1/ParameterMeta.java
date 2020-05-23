@@ -13,5 +13,7 @@ import java.util.Map;
 public class ParameterMeta implements WdlElement {
 
     private Map<String, Expression> attributes;
+    @NonNull
+    private int id;
 
 }

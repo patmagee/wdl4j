@@ -16,5 +16,7 @@ public class Struct implements WdlElement, NamedElement {
     private String name;
     @NonNull
     private List<Declaration> members;
+    @NonNull
+    private int id;
 
 }

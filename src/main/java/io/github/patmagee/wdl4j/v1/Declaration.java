@@ -18,4 +18,7 @@ public class Declaration implements WdlElement, NamedElement {
     private String name;
     private Expression expression;
 
+    @NonNull
+    private int id;
+
 }

@@ -12,4 +12,6 @@ import java.util.List;
 public class Inputs implements WdlElement {
 
     private List<Declaration> declarations;
+    @NonNull
+    private int id;
 }

@@ -1,5 +1,6 @@
 package io.github.patmagee.wdl4j.v1;
 
+import io.github.patmagee.wdl4j.v1.exception.NamespaceException;
 import io.github.patmagee.wdl4j.v1.expression.BinaryExpression;
 import io.github.patmagee.wdl4j.v1.expression.Expression;
 import io.github.patmagee.wdl4j.v1.expression.literal.IntLiteral;
@@ -54,7 +55,7 @@ class WdlDocumentFactoryTest {
 
     @Ignore
     @Test
-    public void testImportsResolveFromLocalFiles() throws IOException {
+    public void testImportsResolveFromLocalFiles() throws IOException, NamespaceException {
         String wdl = "version 1.0 import \"file2.wdl\" as file2 workflow a { input {String p = 'Happy are those ~{1 + 2}'} }";
         String wdl2 = "version 1.0 task a { input { String p } command <<< echo ~{p} >>> }";
         Path tmpdir = Files.createTempDirectory("wdl-imports");

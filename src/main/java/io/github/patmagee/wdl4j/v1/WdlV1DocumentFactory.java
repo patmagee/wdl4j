@@ -2,6 +2,7 @@ package io.github.patmagee.wdl4j.v1;
 
 import io.github.patmagee.wdl4j.v1.api.WdlResolver;
 import io.github.patmagee.wdl4j.v1.errors.WdlAggregatingErrorListener;
+import io.github.patmagee.wdl4j.v1.exception.NamespaceException;
 import io.github.patmagee.wdl4j.v1.exception.WdlResolutionException;
 import io.github.patmagee.wdl4j.v1.exception.WdlSyntaxError;
 import io.github.patmagee.wdl4j.v1.imports.FileWdlResolver;
@@ -104,17 +105,17 @@ public class WdlV1DocumentFactory {
 
     }
 
-    public Document createAndImport(String wdl) throws IOException {
+    public Document createAndImport(String wdl) throws IOException, NamespaceException {
         Document document = create(wdl);
         return resolveImports(document, null);
     }
 
-    public Document createAndImport(URI wdlPath) throws IOException {
+    public Document createAndImport(URI wdlPath) throws IOException, NamespaceException {
         Document document = create(wdlPath);
         return resolveImports(document, wdlPath);
     }
 
-    public Document resolveImports(Document wdl, URI uriContext) throws IOException {
+    public Document resolveImports(Document wdl, URI uriContext) throws IOException, NamespaceException {
         List<Import> imports = wdl.getImports();
         if (imports != null && imports.size() > 0) {
             Map<String, Document> importedDocuments = new HashMap<>();

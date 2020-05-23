@@ -1,18 +1,20 @@
 package io.github.patmagee.wdl4j.v1;
 
 import io.github.patmagee.wdl4j.v1.api.NamedElement;
-import io.github.patmagee.wdl4j.v1.api.NamespaceElement;
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
+import io.github.patmagee.wdl4j.v1.exception.NamespaceException;
+import io.github.patmagee.wdl4j.v1.exception.WdlValidationError;
+import io.github.patmagee.wdl4j.v1.expression.Expression;
 import lombok.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "newBuilder")
-public class Task extends AbstractNamespaceElement implements WdlElement, NamedElement, NamespaceElement {
+public class Task extends AbstractNamespaceElement implements WdlElement, NamedElement {
 
     @NonNull
     private String name;
@@ -23,31 +25,68 @@ public class Task extends AbstractNamespaceElement implements WdlElement, NamedE
     private Outputs outputs;
     private Meta meta;
     private ParameterMeta parameterMeta;
+    @NonNull
+    private int id;
 
-    @Override
-    public WdlElement lookupElement(String name) {
+    public void typeCheck(Namespace parent) throws WdlValidationError {
+        Namespace currentNamespace = captureNamespaceWithoutOutputs(parent);
         if (inputs != null && inputs.getDeclarations() != null) {
-            Optional<Declaration> input = inputs.getDeclarations()
-                                                .stream()
-                                                .filter(dec -> dec.getName().equals(name))
-                                                .findFirst();
-            if (input.isPresent()) {
-                return input.get();
-            }
-        } else if (declarations != null) {
-            Optional<Declaration> decl = declarations.stream().filter(dec -> dec.getName().equals(name)).findFirst();
-            if (decl.isPresent()) {
-                return decl.get();
-            }
-        } else if (outputs != null && outputs.getDeclarations() != null) {
-            Optional<Declaration> output = outputs.getDeclarations()
-                                                  .stream()
-                                                  .filter(dec -> dec.getName().equals(name))
-                                                  .findFirst();
-            if (output.isPresent()) {
-                return output.get();
+            for (Declaration declaration : inputs.getDeclarations()) {
+                if (declaration.getExpression() != null) {
+                    declaration.getExpression().typeCheck(declaration, currentNamespace);
+                }
             }
         }
-        return super.lookupElement(name);
+
+        if (declarations != null) {
+            for (Declaration declaration : declarations) {
+                declaration.getExpression().typeCheck(declaration, currentNamespace);
+            }
+        }
+
+        if (command == null) {
+            throw new WdlValidationError("A task Requires at least one command");
+        } else {
+            for (Command.CommandPart part : command.getCommandParts()) {
+                if (part.getExpression() != null) {
+                    part.getExpression().typeCheck(command, currentNamespace);
+                }
+            }
+        }
+
+        if (runtime != null && runtime.getAttributes() != null) {
+            for (Map.Entry<String, Expression> entry : runtime.getAttributes().entrySet()) {
+                entry.getValue().typeCheck(runtime, currentNamespace);
+            }
+        }
+
+        if (outputs != null && outputs.getDeclarations() != null) {
+            for (Declaration outputDeclaration : outputs.getDeclarations()) {
+                currentNamespace.addDeclaration(outputDeclaration.getName(), outputDeclaration);
+            }
+            for (Declaration declaration : outputs.getDeclarations()) {
+                if (declaration.getExpression() != null) {
+                    declaration.getExpression().typeCheck(declaration, currentNamespace);
+                }
+            }
+        }
+    }
+
+    private Namespace captureNamespaceWithoutOutputs(Namespace parent) throws NamespaceException {
+        Namespace namespace = new Namespace();
+        namespace.setParent(parent);
+        if (inputs != null && inputs.getDeclarations() != null) {
+            for (Declaration inputDeclaration : inputs.getDeclarations()) {
+                namespace.addDeclaration(inputDeclaration.getName(), inputDeclaration);
+            }
+        }
+
+        if (declarations != null) {
+            for (Declaration declaration : declarations) {
+                namespace.addDeclaration(declaration.getName(), declaration);
+            }
+        }
+
+        return namespace;
     }
 }

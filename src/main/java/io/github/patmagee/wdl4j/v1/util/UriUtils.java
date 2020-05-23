@@ -23,7 +23,7 @@ public class UriUtils {
         return false;
     }
 
-    public static String getImportNamepsaceFromUri(URI uri) {
+    public static String getImportNamepsaceFromUri(URI uri) throws NamespaceException {
         if (isFile(uri)) {
             File file = new File(uri);
             String name = file.getName();
