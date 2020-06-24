@@ -4,12 +4,11 @@ import io.github.patmagee.wdl4j.v1.api.StandardLib;
 import io.github.patmagee.wdl4j.v1.api.WdlElement;
 import io.github.patmagee.wdl4j.v1.exception.NamespaceException;
 import io.github.patmagee.wdl4j.v1.exception.WdlValidationError;
+import io.github.patmagee.wdl4j.v1.typing.StructType;
+import io.github.patmagee.wdl4j.v1.typing.Type;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +26,7 @@ public class Document implements WdlElement {
     private int id;
     private StandardLib lib;
 
-    public Document(Version version, List<Import> imports, List<Struct> structs, List<Task> tasks, Workflow workflow,int id) {
+    public Document(Version version, List<Import> imports, List<Struct> structs, List<Task> tasks, Workflow workflow, int id) {
         this.version = version;
         this.imports = imports;
         this.structs = structs;
@@ -66,6 +65,12 @@ public class Document implements WdlElement {
             }
         }
 
+        if (structs != null) {
+            for (Struct struct : structs) {
+                namespace.addStruct(struct);
+            }
+        }
+
         if (workflow != null) {
             captureWorfklowNamespace(namespace);
         }
@@ -91,12 +96,18 @@ public class Document implements WdlElement {
         Namespace taskNamespace = new Namespace();
         if (task.getInputs() != null && task.getInputs().getDeclarations() != null) {
             for (Declaration inputDecl : task.getInputs().getDeclarations()) {
+                if (inputDecl.getDeclType() instanceof StructType) {
+                    setStructMembers(currentNamespace, (StructType) inputDecl.getDeclType());
+                }
                 taskNamespace.addDeclaration(inputDecl.getName(), inputDecl);
             }
         }
 
         if (task.getOutputs() != null && task.getOutputs().getDeclarations() != null) {
             for (Declaration outputDecl : task.getOutputs().getDeclarations()) {
+                if (outputDecl.getDeclType() instanceof StructType) {
+                    setStructMembers(currentNamespace, (StructType) outputDecl.getDeclType());
+                }
                 taskNamespace.addDeclaration(outputDecl.getName(), outputDecl);
             }
         }
@@ -108,12 +119,18 @@ public class Document implements WdlElement {
         Namespace workflowNamespace = new Namespace();
         if (workflow.getInputs() != null && workflow.getInputs().getDeclarations() != null) {
             for (Declaration inputDecl : workflow.getInputs().getDeclarations()) {
+                if (inputDecl.getDeclType() instanceof StructType) {
+                    setStructMembers(currentNamespace, (StructType) inputDecl.getDeclType());
+                }
                 workflowNamespace.addDeclaration(inputDecl.getName(), inputDecl);
             }
         }
 
         if (workflow.getOutputs() != null && workflow.getOutputs().getDeclarations() != null) {
             for (Declaration outputDecl : workflow.getOutputs().getDeclarations()) {
+                if (outputDecl.getDeclType() instanceof StructType) {
+                    setStructMembers(currentNamespace, (StructType) outputDecl.getDeclType());
+                }
                 workflowNamespace.addDeclaration(outputDecl.getName(), outputDecl);
             }
         }
@@ -144,4 +161,14 @@ public class Document implements WdlElement {
         }
         return structsToReturn;
     }
+
+    private void setStructMembers(Namespace namespace, StructType structType) throws NamespaceException {
+        Struct struct = namespace.getStruct(structType.getName());
+        Map<String, Type> members = new HashMap<>();
+        for (Declaration declaration : struct.getMembers()) {
+            members.put(declaration.getName(), declaration.getDeclType());
+        }
+        structType.setMembers(members);
+    }
+
 }

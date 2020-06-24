@@ -32,6 +32,7 @@ public class Task implements WdlElement, NamedElement {
         Namespace currentNamespace = captureNamespaceWithoutOutputs(parent);
         if (inputs != null && inputs.getDeclarations() != null) {
             for (Declaration declaration : inputs.getDeclarations()) {
+
                 if (declaration.getExpression() != null) {
                     declaration.getExpression().typeCheck(declaration, currentNamespace);
                 }
